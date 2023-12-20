@@ -1,6 +1,8 @@
 """Utilities to for data generation."""
 import re
 
+from typing import Optional
+
 
 CODE_PATTERN = re.compile(r"```[\w\W]*?```")
 LANG_PATTERN = re.compile(r"```[\w]*")
