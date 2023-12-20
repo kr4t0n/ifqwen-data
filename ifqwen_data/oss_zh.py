@@ -84,7 +84,7 @@ def main():
             for future in concurrent.futures.as_completed(futures):
                 result = future.result()
 
-                if result is None:
+                if result is not None:
                     # successfully generate oss_zh data
                     f.write(f"{json.dumps(result)}\n")
                     f.flush()
