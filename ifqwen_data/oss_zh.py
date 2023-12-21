@@ -71,6 +71,7 @@ def main():
     llm = ChatOpenAI(
         openai_api_base=OPENAI_API_BASE,
         openai_api_key=OPENAI_API_KEY,
+        model_name="gpt-3.5-turbo-0613",
         temperature=0.5,
     )
 
