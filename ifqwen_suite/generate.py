@@ -7,7 +7,7 @@ import argparse
 from copy import deepcopy
 from tqdm.auto import tqdm
 
-from utils import extract_code_pattern
+from utils import extract_code_pattern, extract_lang_pattern
 
 
 args_parser = argparse.ArgumentParser()
@@ -46,11 +46,18 @@ def get_solution(prompt: str) -> str:
     payload["input"]["messages"][0]["content"] = prompt
 
     try:
-        response = requests.request("POST", URL, headers=HEADERS, data=payload, timeout=3600)
+        response = requests.request(
+            "POST",
+            URL,
+            headers=HEADERS,
+            data=json.dumps(payload),
+            timeout=3600,
+        )
+        result = response.json()["output"]["text"]
     except Exception:  # pylint: disable=W0718
         return ""
 
-    return response.text
+    return result
 
 
 def main():
@@ -60,10 +67,16 @@ def main():
             for line in tqdm(fi.readlines()):
                 line = json.loads(line)
                 prompt = line["prompt"]
-                test = line["text"]
+                test = line["test"]
 
                 solution = get_solution(prompt)
                 solution = extract_code_pattern(solution)
+                lang = extract_lang_pattern(solution)
+
+                # replace code snippet markdown
+                solution = solution.replace(f"```{lang}\n", "")
+                solution = solution.replace(f"```{lang}", "")
+                solution = solution.replace("```", "")
 
                 data = {"Solution": solution, "test": test}
                 fo.write(f"{json.dumps(data)}\n")
