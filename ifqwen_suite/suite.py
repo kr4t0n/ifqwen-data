@@ -3,6 +3,8 @@ import json
 import argparse
 import subprocess
 
+from tqdm.auto import tqdm
+
 args_parser = argparse.ArgumentParser()
 args_parser.add_argument("-f", "--file", type=str)
 args = args_parser.parse_args()
@@ -33,8 +35,8 @@ def main():
     entrance = "if __name__ == '__main__':\n    unittest.main()"
 
     success, failed = 0, 0
-    with open(args.file, encoding="utf-8") as f:
-        for line in f.readlines():
+    with open(args.file, "r", encoding="utf-8") as f:
+        for line in tqdm(f.readlines()):
             line = json.loads(line)
 
             solution = line["Solution"]
@@ -45,7 +47,7 @@ def main():
                 f.write(code)
 
             try:
-                subprocess.run(["python", "temp.py"], check=True, capture_output=True, text=True, timeout=60)
+                subprocess.run(["python", "temp.py"], check=True, capture_output=True, text=True, timeout=5)
                 success += 1
             except Exception:  # pylint: disable=W0718
                 failed += 1
