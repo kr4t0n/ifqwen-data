@@ -45,7 +45,7 @@ def main():
                 f.write(code)
 
             try:
-                subprocess.run(["python", "temp.py"], check=True, capture_output=True, text=True)
+                subprocess.run(["python", "temp.py"], check=True, capture_output=True, text=True, timeout=60)
                 success += 1
             except Exception:  # pylint: disable=W0718
                 failed += 1
